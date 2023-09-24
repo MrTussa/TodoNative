@@ -17,12 +17,15 @@ export default function App() {
     {
       id: 1,
       text: "first",
+      checked: false,
     },
     {
       id: 2,
       text: "second",
+      checked: false,
     },
   ];
+  const [filter, setFilter] = useState(data);
   const [data, setData] = useState(startData);
   const [input, setInput] = useState();
   const onChangeInput = (e) => {
@@ -31,7 +34,7 @@ export default function App() {
   const addItem = () => {
     const newId =
       data[data.length - 1] !== undefined ? data[data.length - 1].id + 1 : 1;
-    const newData = [...data, { id: newId + 1, text: input }];
+    const newData = [...data, { id: newId + 1, text: input, checked: false }];
     setData(newData);
     setInput("");
   };
@@ -39,6 +42,13 @@ export default function App() {
     const newData = data.filter((item) => item.id !== id);
     setData(newData);
   };
+  const checkItem = (id) => {
+    const newData = data.map((item) => item.id === id ? { ...item, checked: true } : item)
+    setData(newData)
+  }
+  const changeComplitedHandler = () => {
+
+  }
   return (
     <View className="flex-1">
       <SafeAreaProvider className="flex-1">
@@ -49,7 +59,7 @@ export default function App() {
               className=""
               data={data}
               renderItem={({ item: { text, id } }) => (
-                <ListItem deleteHandler={deleteHandler} id={id} text={text} />
+                <ListItem deleteHandler={deleteHandler} checkItem={checkItem} id={id} text={text} />
               )}
               keyExtractor={(item) => item.id}
             />
