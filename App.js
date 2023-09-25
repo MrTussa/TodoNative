@@ -9,7 +9,8 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from "react-native";
-import { useState } from "react";
+import DropDownPicker from 'react-native-dropdown-picker';
+import { useEffect, useState } from "react";
 import { Header, ListItem } from "./components";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 export default function App() {
@@ -28,6 +29,15 @@ export default function App() {
   const [filter, setFilter] = useState(data);
   const [data, setData] = useState(startData);
   const [input, setInput] = useState();
+  //Dropdown states
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [dropdownValue, setDropdownValue] = useState(null);
+  const dropdownData = [
+    { label: 'All', value: 'all' },
+    { label: 'Checked', value: 'checked' },
+    { label: 'Unchecked', value: 'unchecked' },
+  ]
+  //
   const onChangeInput = (e) => {
     setInput(e);
   };
@@ -42,24 +52,45 @@ export default function App() {
     const newData = data.filter((item) => item.id !== id);
     setData(newData);
   };
-  const checkItem = (id) => {
-    const newData = data.map((item) => item.id === id ? { ...item, checked: true } : item)
+  const checkItem = (e, id) => {
+    const newData = data.map((item) => item.id === id ? { ...item, checked: e } : item)
     setData(newData)
   }
   const changeComplitedHandler = () => {
-
+    const newData = data.filter((item) => {
+      if (dropdownValue === "checked") {
+        return item.checked === true ? item : undefined
+      } else if (dropdownValue === "unchecked") {
+        return item.checked === false ? item : undefined
+      } else {
+        return item
+      }
+    })
+    setFilter(newData)
   }
+  useEffect(() => {
+    changeComplitedHandler()
+  }, [dropdownValue, data])
   return (
     <View className="flex-1">
       <SafeAreaProvider className="flex-1">
         <SafeAreaView>
           <Header></Header>
+          <View className="pl-7 pr-7 pb-3">
+            <DropDownPicker
+              open={openDropdown}
+              value={dropdownValue}
+              items={dropdownData}
+              setOpen={(open) => setOpenDropdown(open)}
+              setValue={(value) => setDropdownValue(value)}
+            />
+          </View>
           <View className=" pl-7 pr-7 pb-20">
             <FlatList
               className=""
-              data={data}
-              renderItem={({ item: { text, id } }) => (
-                <ListItem deleteHandler={deleteHandler} checkItem={checkItem} id={id} text={text} />
+              data={filter}
+              renderItem={({ item: { text, id, checked } }) => (
+                <ListItem deleteHandler={deleteHandler} checked={checked} checkItem={checkItem} id={id} text={text} />
               )}
               keyExtractor={(item) => item.id}
             />
