@@ -6,14 +6,12 @@ import {
   Button,
   Platform,
   KeyboardAvoidingView,
-  Alert,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
 import { useEffect, useState } from "react";
-import { Header, ListItem } from "../components";
+import { Header, ListItem, Dropdown } from "../components";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
-import { addItem, setDropdownValue, filterData } from "../store/todoSlice";
+import { addItem, filterData } from "../store/todoSlice";
 export default function TodoApp() {
   const { data, filteredData, dropdownValue } = useSelector(
     (state) => state.todo
@@ -21,13 +19,6 @@ export default function TodoApp() {
   const dispatch = useDispatch();
   const [input, setInput] = useState();
   //Dropdown states
-  const [openDropdown, setOpenDropdown] = useState(false);
-  const dropdownData = [
-    { label: "All", value: "all" },
-    { label: "Checked", value: "checked" },
-    { label: "Unchecked", value: "unchecked" },
-  ];
-  //
   const onChangeInput = (e) => {
     setInput(e);
   };
@@ -37,23 +28,6 @@ export default function TodoApp() {
     const newData = [...data, { id: newId + 1, text: input, checked: false }];
     dispatch(addItem(newData));
     setInput("");
-  };
-
-  const changeComplitedHandler = () => {
-    const newData = data.filter((item) => {
-      if (dropdownValue === "checked") {
-        return item.checked === true ? item : undefined;
-      } else if (dropdownValue === "unchecked") {
-        return item.checked === false ? item : undefined;
-      } else {
-        return item;
-      }
-    });
-    setFilter(newData);
-  };
-  const setDropdownValueHandler = (event) => {
-    console.log(event);
-    dispatch(setDropdownValue(event));
   };
   const editFunc = (event, id) => {
     const { value } = e.target;
@@ -73,14 +47,7 @@ export default function TodoApp() {
         <SafeAreaView>
           <Header></Header>
           <View className="pl-7 pr-7 pb-3">
-            <DropDownPicker
-              className="font-bold"
-              open={openDropdown}
-              value={dropdownValue}
-              items={dropdownData}
-              setOpen={(open) => setOpenDropdown(open)}
-              setValue={(event) => setDropdownValueHandler(event)}
-            />
+            <Dropdown />
           </View>
           <View className=" pl-7 pr-7 pb-20">
             <FlatList

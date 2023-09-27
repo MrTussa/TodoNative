@@ -37,9 +37,9 @@ export const todoSlice = createSlice({
     },
     filterData: (state) => {
       const newData = state.data.filter((item) => {
-        if (this.dropdownValue === "checked") {
+        if (state.dropdownValue.payload === "checked") {
           return item.checked === true ? item : undefined;
-        } else if (this.dropdownValue === "unchecked") {
+        } else if (state.dropdownValue.payload === "unchecked") {
           return item.checked === false ? item : undefined;
         } else {
           return item;
@@ -47,15 +47,15 @@ export const todoSlice = createSlice({
       });
       state.filteredData = newData;
     },
-    setDropdownValue: (state, action) => {
-      console.log(action.payload);
-      state.dropdownValue = action.payload;
-    },
+    changeDropdownValue: (state, action) => {
+      state.dropdownValue = action
+      filterData()
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { checkItem, deleteItem, addItem, setDropdownValue, filterData } =
+export const { checkItem, deleteItem, addItem, setDropdownValue, filterData, changeDropdownValue } =
   todoSlice.actions;
 
 export default todoSlice.reducer;
