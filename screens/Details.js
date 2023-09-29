@@ -61,6 +61,23 @@ export default function TodoApp() {
           <StatusBar style="auto" />
         </SafeAreaView>
       </SafeAreaProvider>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View className="flex flex-row justify-between w-full h-9 pl-7 pr-7 mb-7 bg-white">
+          <TextInput
+            className="w-2/3 border rounded-lg"
+            value={input}
+            onChangeText={onChangeInput}
+            placeholder="Text"
+          />
+          <Button
+            className="w-full"
+            title="add item"
+            onPress={addItemHandler}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

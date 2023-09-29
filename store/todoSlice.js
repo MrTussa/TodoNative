@@ -2,12 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const startData = [
   {
     id: 1,
-    text: "first",
+    title: "First",
+    text: "First text  example",
     checked: false,
   },
   {
     id: 2,
-    text: "second",
+    title: "Second",
+    text: "Second text  example",
     checked: false,
   },
 ];
@@ -20,11 +22,10 @@ export const todoSlice = createSlice({
   },
   reducers: {
     checkItem: (state, action) => {
-      const { e, id } = action.payload;
+      const { isChecked, id } = action.payload;
       const newData = state.data.map((item) =>
-        item.id === id ? { ...item, checked: e } : item
+        item.id === id ? { ...item, checked: isChecked } : item
       );
-
       state.data = newData;
     },
     deleteItem: (state, action) => {
@@ -33,7 +34,16 @@ export const todoSlice = createSlice({
       state.data = newData;
     },
     addItem: (state, action) => {
-      state.data = action.payload;
+      const { text, title } = action.payload;
+      const newId =
+        state.data[state.data.length - 1] !== undefined
+          ? state.data[state.data.length - 1].id + 1
+          : 1;
+      const newData = [
+        ...state.data,
+        { id: newId + 1, text: text, title: title, checked: false },
+      ];
+      state.data = newData;
     },
     filterData: (state) => {
       const newData = state.data.filter((item) => {
@@ -48,14 +58,20 @@ export const todoSlice = createSlice({
       state.filteredData = newData;
     },
     changeDropdownValue: (state, action) => {
-      state.dropdownValue = action
-      filterData()
-    }
+      state.dropdownValue = action;
+      filterData();
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { checkItem, deleteItem, addItem, setDropdownValue, filterData, changeDropdownValue } =
-  todoSlice.actions;
+export const {
+  checkItem,
+  deleteItem,
+  addItem,
+  setDropdownValue,
+  filterData,
+  changeDropdownValue,
+} = todoSlice.actions;
 
 export default todoSlice.reducer;
