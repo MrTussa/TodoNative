@@ -3,13 +3,12 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { checkItem, deleteItem } from "../../store/todoSlice";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-export default function ListItem({ text, id, editFunc, checked, title }) {
+export default function ListItem({ text, id, checked, title }) {
   const dispatch = useDispatch();
-  const checkItemHandler = (isChecked, id) => {
+  const checkItemHandler = (isChecked) => {
     dispatch(checkItem({ isChecked, id }));
   };
-  const deleteHandler = (id) => {
-    console.log("Asdasd");
+  const deleteHandler = () => {
     Alert.alert("Delete task?", text, [
       {
         text: "Cancel",
@@ -27,7 +26,7 @@ export default function ListItem({ text, id, editFunc, checked, title }) {
     <View className="flex bg-white flex-row w-full-inset-6 items-center box-border justify-between mb-3 pt-2 pb-2 pl-2 border rounded-lg">
       <View className="flex w-4/6 flex-row items-center">
         <BouncyCheckbox
-          onPress={(e) => checkItemHandler(e, id)}
+          onPress={(e) => checkItemHandler(e)}
           isChecked={checked}
           innerIconStyle={{ borderWidth: 3 }}
           size={27}
@@ -45,7 +44,7 @@ export default function ListItem({ text, id, editFunc, checked, title }) {
         size={34}
         color="red"
         onPress={() => {
-          deleteHandler(id);
+          deleteHandler();
         }}
       />
     </View>
