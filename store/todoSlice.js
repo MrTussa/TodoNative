@@ -22,26 +22,29 @@ export const todoSlice = createSlice({
   },
   reducers: {
     checkItem: (state, action) => {
-      const { isChecked, id } = action.payload;
       const newData = state.data.map((item) =>
-        item.id === id ? { ...item, checked: isChecked } : item
+        item.id === action.payload ? { ...item, checked: !item.checked } : item
       );
+
       state.data = newData;
     },
     deleteItem: (state, action) => {
-      const id = action.payload;
-      const newData = state.data.filter((item) => item.id !== id);
+      const newData = state.data.filter((item) => item.id !== action.payload);
       state.data = newData;
     },
     addItem: (state, action) => {
-      const { text, title } = action.payload;
       const newId =
         state.data[state.data.length - 1] !== undefined
           ? state.data[state.data.length - 1].id + 1
           : 1;
       const newData = [
         ...state.data,
-        { id: newId + 1, text: text, title: title, checked: false },
+        {
+          id: newId + 1,
+          text: action.payload.text,
+          title: action.payload.title,
+          checked: false,
+        },
       ];
       state.data = newData;
     },
