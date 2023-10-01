@@ -43,9 +43,11 @@ export const todoSlice = createSlice({
           id: newId + 1,
           text: action.payload.text,
           title: action.payload.title,
+          deadline: action.payload.start !== undefined ? { start: action.payload.start, end: action.payload.end } : false,
           checked: false,
         },
       ];
+      console.log(newData);
       state.data = newData;
     },
     filterData: (state) => {

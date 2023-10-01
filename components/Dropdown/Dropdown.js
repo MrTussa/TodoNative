@@ -2,7 +2,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { changeDropdownValue } from "../../store/todoSlice";
-export default function Dropdown({}) {
+export default function Dropdown({ }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("all");
   const [items, setItems] = useState([
@@ -26,6 +26,10 @@ export default function Dropdown({}) {
       setValue={setValll}
       setItems={setItems}
       className="bg-gray-50"
+      style={{
+        borderColor: "rgb(209 213 219)"
+      }}
+
     />
   );
 }

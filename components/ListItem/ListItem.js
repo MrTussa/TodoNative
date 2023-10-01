@@ -29,7 +29,7 @@ export default function ListItem({ item }) {
     navigation.navigate("Details", { item });
   };
   return (
-    <View className="flex bg-gray-50 flex-row w-full-inset-6 items-center box-border justify-between mb-3 pt-2 pb-2 pl-2 border rounded-lg">
+    <View className="flex bg-gray-50 border border-gray-300 text-gray-900 flex-row w-full-inset-6 items-center box-border justify-between mb-3 pt-2 pb-2 pl-2 border rounded-lg">
       <View className="flex w-4/6 flex-row items-center">
         <BouncyCheckbox
           onPress={checkItemHandler}

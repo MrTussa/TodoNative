@@ -1,34 +1,27 @@
-import { View, TextInput, Button, Text } from "react-native";
+import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { addItem } from "../store/todoSlice";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
+import { CustomButton } from '../components';
 import Toast from "react-native-toast-message";
 export default function CreateTask() {
-  const [pickerStart, setPickerStart] = useState(false);
-  const [pickerEnd, setPickerEnd] = useState(false);
-  const [dateStart, setDateStart] = useState(new Date(Date.now()));
-  const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
+  const [picker, setPicker] = useState(false);
+  const [hasDeadline, setHasDeadline] = useState(true)
+  const [date, setDate] = useState(new Date(Date.now()));
   const currDate = new Date(Date.now())
-  const showPickerStart = () => {
-    setPickerStart(true);
+  const setDeadlineHandler = () => {
+    setHasDeadline((prevState) => !prevState)
+  }
+  const showPicker = () => {
+    setPicker(true);
   };
-  const showPickerEnd = () => {
-    setPickerEnd(true);
-  };
-  const onChange = (type, value) => {
-    if (type === "start") {
-      setDateStart(value);
-      if (Platform.OS === "android") {
-        setPickerStart(false);
-      }
-    } else {
-      setDateEnd(value);
-      if (Platform.OS === "android") {
-        setPickerEnd(false);
-      }
+  const onChange = (event, value) => {
+    setDate(value);
+    if (Platform.OS === "android") {
+      setPicker(false);
     }
   };
   const dispatch = useDispatch();
@@ -44,7 +37,12 @@ export default function CreateTask() {
         text1: "Enter description!",
       });
     } else {
-      dispatch(addItem(newItem));
+      if (hasDeadline) {
+        const newData = { ...newItem, deadline: date }
+        dispatch(addItem(newData));
+      } else {
+        dispatch(addItem(newItem));
+      }
       Toast.show({
         type: "success",
         text1: "Successfully added",
@@ -61,37 +59,35 @@ export default function CreateTask() {
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
             <View className="-z-10">
-              <View className="flex flex-row justify-between mb-3">
-                <View className="w-2/5">
-                  <Text className="text-blue-400 text-base font-semibold">Start: {dateStart.toLocaleDateString()}</Text>
-                  <Button
-                    title="Set start date"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
-                    onPress={showPickerStart}
+              {hasDeadline ? (
+                <CustomButton
+                  onPress={setDeadlineHandler}
+                  title="Disable deadline"
+                  color="red"
+                  size="pt-3 pb-3"
+                />
+              ) : (
+                <CustomButton
+                  onPress={setDeadlineHandler}
+                  title="Enable deadline"
+                  size="pt-3 pb-3"
+                />
+              )}
+              <View className=" mb-3 mt-3">
+                <View className="flex flex-row justify-between">
+                  <CustomButton
+                    onPress={showPicker}
+                    disabled={!hasDeadline}
+                    title="Set deadline"
+                    buttonStyle="w-1/2"
                   />
-                  {pickerStart && (
+                  <Text className={` ${hasDeadline === true ? "text-blue-400" : "text-gray-500"} text-2xl `}>{date.toLocaleDateString()}</Text>
+                  {picker && (
                     <DateTimePicker
                       minimumDate={currDate}
-                      value={dateStart}
+                      value={date}
                       mode={"date"}
-                      onChange={(event, value) => onChange("start", value)}
-                    />
-                  )}
-                </View>
-                <View className="w-2/5">
-                  <Text className="text-blue-400 text-base font-semibold">Ends: {dateEnd.toLocaleDateString()}</Text>
-                  <Button
-                    title="Set end day"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
-                    onPress={showPickerEnd}
-                  />
-
-                  {pickerEnd && (
-                    <DateTimePicker
-                      minimumDate={dateStart}
-                      value={dateEnd}
-                      mode={"date"}
-                      onChange={(event, value) => onChange("end", value)}
+                      onChange={onChange}
                     />
                   )}
                 </View>
@@ -116,10 +112,10 @@ export default function CreateTask() {
                 onBlur={handleBlur("text")}
                 value={values.text}
               />
-              <Button
+              <CustomButton
                 onPress={handleSubmit}
+                size="pt-3 pb-3"
                 title="Submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
               />
             </View>
           )}
