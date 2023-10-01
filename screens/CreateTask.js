@@ -7,27 +7,49 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 export default function CreateTask() {
-  const [isPickerShow, setIsPickerShow] = useState(false);
-  const [date, setDate] = useState(new Date(Date.now()));
-
-  const showPicker = () => {
-    setIsPickerShow(true);
+  const [pickerStart, setPickerStart] = useState(false);
+  const [pickerEnd, setPickerEnd] = useState(false);
+  const [dateStart, setDateStart] = useState(new Date(Date.now()));
+  const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
+  const currDate = new Date(Date.now())
+  const showPickerStart = () => {
+    setPickerStart(true);
   };
-
-  const onChange = (event, value) => {
-    setDate(value);
-    if (Platform.OS === "android") {
-      setIsPickerShow(false);
+  const showPickerEnd = () => {
+    setPickerEnd(true);
+  };
+  const onChange = (type, value) => {
+    if (type === "start") {
+      setDateStart(value);
+      if (Platform.OS === "android") {
+        setPickerStart(false);
+      }
+    } else {
+      setDateEnd(value);
+      if (Platform.OS === "android") {
+        setPickerEnd(false);
+      }
     }
   };
-
   const dispatch = useDispatch();
   const addItemHandler = (newItem) => {
-    dispatch(addItem(newItem));
-    Toast.show({
-      type: "success",
-      text1: "Succesfuly added",
-    });
+    if (newItem.title === "") {
+      Toast.show({
+        type: "error",
+        text1: "Enter title!",
+      });
+    } else if (newItem.text === "") {
+      Toast.show({
+        type: "error",
+        text1: "Enter description!",
+      });
+    } else {
+      dispatch(addItem(newItem));
+      Toast.show({
+        type: "success",
+        text1: "Successfully added",
+      });
+    }
   };
   return (
     <SafeAreaProvider className="flex-1">
@@ -39,24 +61,37 @@ export default function CreateTask() {
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
             <View className="-z-10">
-              <View>
-                <View>
-                  <Text>Start</Text>
-                  <View>
-                    <Button
-                      title="Show Picker"
-                      color="purple"
-                      onPress={showPicker}
-                    />
-                  </View>
-
-                  {isPickerShow && (
+              <View className="flex flex-row justify-between mb-3">
+                <View className="w-2/5">
+                  <Text className="text-blue-400 text-base font-semibold">Start: {dateStart.toLocaleDateString()}</Text>
+                  <Button
+                    title="Set start date"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+                    onPress={showPickerStart}
+                  />
+                  {pickerStart && (
                     <DateTimePicker
-                      value={date}
+                      minimumDate={currDate}
+                      value={dateStart}
                       mode={"date"}
-                      display={Platform.OS === "ios" ? "spinner" : "default"}
-                      is24Hour={true}
-                      onChange={onChange}
+                      onChange={(event, value) => onChange("start", value)}
+                    />
+                  )}
+                </View>
+                <View className="w-2/5">
+                  <Text className="text-blue-400 text-base font-semibold">Ends: {dateEnd.toLocaleDateString()}</Text>
+                  <Button
+                    title="Set end day"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+                    onPress={showPickerEnd}
+                  />
+
+                  {pickerEnd && (
+                    <DateTimePicker
+                      minimumDate={dateStart}
+                      value={dateEnd}
+                      mode={"date"}
+                      onChange={(event, value) => onChange("end", value)}
                     />
                   )}
                 </View>
@@ -84,7 +119,7 @@ export default function CreateTask() {
               <Button
                 onPress={handleSubmit}
                 title="Submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
               />
             </View>
           )}
