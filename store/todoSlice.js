@@ -4,12 +4,14 @@ const startData = [
     id: 1,
     title: "First",
     text: "First text  example",
+    deadline: false,
     checked: false,
   },
   {
     id: 2,
     title: "Second",
     text: "Second text  example",
+    deadline: false,
     checked: false,
   },
 ];
@@ -43,11 +45,10 @@ export const todoSlice = createSlice({
           id: newId + 1,
           text: action.payload.text,
           title: action.payload.title,
-          deadline: action.payload.start !== undefined ? { start: action.payload.start, end: action.payload.end } : false,
+          deadline: action.payload.deadline !== undefined ? action.payload.deadline : false,
           checked: false,
         },
       ];
-      console.log(newData);
       state.data = newData;
     },
     filterData: (state) => {

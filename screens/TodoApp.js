@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { FlatList, View } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ListItem, Dropdown } from "../components";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";

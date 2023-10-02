@@ -29,14 +29,14 @@ export default function ListItem({ item }) {
     navigation.navigate("Details", { item });
   };
   return (
-    <View className="flex bg-gray-50 border border-gray-300 text-gray-900 flex-row w-full-inset-6 items-center box-border justify-between mb-3 pt-2 pb-2 pl-2 border rounded-lg">
+    <View className="flex bg-gray-50 border border-gray-300 text-gray-900 flex-row w-full-inset-6 items-center box-border justify-between mb-3 pt-2 pb-2 pl-2  rounded-lg">
       <View className="flex w-4/6 flex-row items-center">
         <BouncyCheckbox
           onPress={checkItemHandler}
           isChecked={checked}
           disableBuiltInState
           innerIconStyle={{ borderWidth: 3 }}
-          size={27}
+          size={30}
         />
         <TouchableOpacity
           onPress={navigateToDetails}
@@ -46,16 +46,19 @@ export default function ListItem({ item }) {
           <Text className="text-base">{text}</Text>
         </TouchableOpacity>
       </View>
-      <MaterialIcons.Button
-        backgroundColor="white"
-        className="p-1 pr-0 m-0"
-        name="highlight-remove"
-        size={34}
-        color="red"
+      <TouchableOpacity
         onPress={() => {
           deleteHandler();
         }}
+        className="pr-2"
+      >
+      <MaterialIcons
+        backgroundColor="transparent"
+        name="highlight-remove"
+        size={40}
+        color="red"
       />
+      </TouchableOpacity>
     </View>
   );
 }

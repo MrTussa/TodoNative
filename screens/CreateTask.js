@@ -5,16 +5,16 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { CustomButton } from '../components';
+import { CustomButton } from "../components";
 import Toast from "react-native-toast-message";
 export default function CreateTask() {
   const [picker, setPicker] = useState(false);
-  const [hasDeadline, setHasDeadline] = useState(true)
+  const [hasDeadline, setHasDeadline] = useState(false);
   const [date, setDate] = useState(new Date(Date.now()));
-  const currDate = new Date(Date.now())
+  const currDate = new Date(Date.now());
   const setDeadlineHandler = () => {
-    setHasDeadline((prevState) => !prevState)
-  }
+    setHasDeadline((prevState) => !prevState);
+  };
   const showPicker = () => {
     setPicker(true);
   };
@@ -38,7 +38,8 @@ export default function CreateTask() {
       });
     } else {
       if (hasDeadline) {
-        const newData = { ...newItem, deadline: date }
+        const newData = { ...newItem, deadline: JSON.stringify(date) };
+        console.log(JSON.stringify(date));
         dispatch(addItem(newData));
       } else {
         dispatch(addItem(newItem));
@@ -81,7 +82,13 @@ export default function CreateTask() {
                     title="Set deadline"
                     buttonStyle="w-1/2"
                   />
-                  <Text className={` ${hasDeadline === true ? "text-blue-400" : "text-gray-500"} text-2xl `}>{date.toLocaleDateString()}</Text>
+                  <Text
+                    className={` ${
+                      hasDeadline === true ? "text-blue-400" : "text-gray-500"
+                    } text-2xl `}
+                  >
+                    {date.toLocaleDateString()}
+                  </Text>
                   {picker && (
                     <DateTimePicker
                       minimumDate={currDate}
